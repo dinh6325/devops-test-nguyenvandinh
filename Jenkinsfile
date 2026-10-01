@@ -42,7 +42,7 @@ pipeline {
                 echo '===== DEPLOY TO VERCEL ====='
 
                 sh '''
-                    npx vercel --prod --token "$VERCEL_TOKEN" --yes
+                    npx vercel --prod --token "$VERCEL_TOKEN" --yes --name devops-test-nguyenvandinh
                 '''
             }
         }
