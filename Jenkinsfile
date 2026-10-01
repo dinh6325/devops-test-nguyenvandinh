@@ -44,30 +44,40 @@ pipeline {
                 echo '===== DEPLOY TO VERCEL ====='
 
                 sh '''
-                    curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
-                        -d chat_id="${TELEGRAM_CHAT_ID}" \
+                    echo "===== SEND TELEGRAM: DEPLOY STARTED ====="
+
+                    curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
+                        -d "chat_id=${TELEGRAM_CHAT_ID}" \
                         --data-urlencode "text=🚀 DEPLOY STARTED
 Project: devops-test
-Branch: main"
+Branch: main" || true
 
-                    npx vercel --prod --token "$VERCEL_TOKEN" --yes --name devops-test-nguyenvandinh
+                    echo "===== DEPLOY TO VERCEL ====="
+
+                    npx vercel --prod \
+                        --token "$VERCEL_TOKEN" \
+                        --yes \
+                        --name devops-test-nguyenvandinh
                 '''
             }
         }
     }
 
     post {
+
         success {
             echo '===== BUILD SUCCESS ====='
             echo '===== DEPLOY SUCCESS ====='
 
             sh '''
-                curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
-                    -d chat_id="${TELEGRAM_CHAT_ID}" \
+                echo "===== SEND TELEGRAM: DEPLOY SUCCESS ====="
+
+                curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
+                    -d "chat_id=${TELEGRAM_CHAT_ID}" \
                     --data-urlencode "text=✅ DEPLOY SUCCESS
 Project: devops-test
 Branch: main
-URL: https://devops-test-nguyenvandinh.vercel.app"
+URL: https://devops-test-nguyenvandinh.vercel.app" || true
             '''
         }
 
@@ -76,12 +86,14 @@ URL: https://devops-test-nguyenvandinh.vercel.app"
             echo '===== DEPLOY FAILED ====='
 
             sh '''
-                curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
-                    -d chat_id="${TELEGRAM_CHAT_ID}" \
+                echo "===== SEND TELEGRAM: DEPLOY FAILED ====="
+
+                curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
+                    -d "chat_id=${TELEGRAM_CHAT_ID}" \
                     --data-urlencode "text=❌ DEPLOY FAILED
 Project: devops-test
 Branch: main
-Please check Jenkins."
+Please check Jenkins." || true
             '''
         }
     }
